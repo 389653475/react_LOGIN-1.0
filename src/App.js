@@ -1,18 +1,21 @@
 import React, {Component} from 'react';
 
 import './App.css'
-import Contest from './Work/Contest'
-import Submit from "./Work/Submit";
-import moment from "moment";
+import Context from "./Work/context";
+import Login from "./Work/Login";
+import {BrowserRouter,Route,Redirect} from "react-router-dom";
 class App extends Component {
 
     render() {
         return (
-            <div>
-                <Contest/>
-                <p>{moment().format('YYYY-MM-DD HH:mm:ss')}</p>
-                <Submit />
-            </div>
+            <BrowserRouter>
+                <div>
+
+                    <Route path="/Login" component={Login}/>
+                    <Route path="/context" component={Context}/>
+                    <Redirect to="/Login"/>
+                </div>
+            </BrowserRouter>
         );
     }
 }
