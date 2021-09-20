@@ -1,16 +1,31 @@
 import React from 'react';
 import { Form, Input, Button, Checkbox } from 'antd';
-import {useHistory} from "react-router-dom";
+import {NavLink, useHistory} from "react-router-dom";
+import axios from "axios";
 //登录页面
 function Login () {
     let history = useHistory();
+    let username_exist=false
     const onFinish = (values) => {
-        if (values.password==='123456'&&values.username==='admin'){
-            history.push("/context");
-        }else {
-            alert('用户名或密码错误')
-        }
-        console.log('Success:', values);
+        axios.get(`http://127.0.0.1:8000/Login`,).then(
+            response => {
+                response.data.map((item)=>{
+                    if (values.username.replace(/\s*/g,"")===item.username){
+                        username_exist=true
+                        if (values.password===item.password){
+                            history.push("/context");
+                        }else{
+                            alert('用户名或密码错误')
+                        }
+                    }
+
+                })
+                if (!username_exist){
+                    alert('用户名不存在')
+                }
+            },
+            error => {console.log('失败了',error);}
+        )
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -18,14 +33,16 @@ function Login () {
         alert('请输入密码')
     };
 
+
     return (
+        <div>
         <Form
             name="basic"
             labelCol={{
-                span: 8,
+                span: 6,
             }}
             wrapperCol={{
-                span: 16,
+                span: 10,
             }}
             initialValues={{
                 remember: true,
@@ -64,7 +81,7 @@ function Login () {
                 name="remember"
                 valuePropName="checked"
                 wrapperCol={{
-                    offset: 8,
+                    offset: 6,
                     span: 16,
                 }}
             >
@@ -73,7 +90,7 @@ function Login () {
 
             <Form.Item
                 wrapperCol={{
-                    offset: 8,
+                    offset: 6,
                     span: 16,
                 }}
             >
@@ -82,6 +99,10 @@ function Login () {
                 </Button>
             </Form.Item>
         </Form>
+            <NavLink to="/register">
+                <Button type="primary">注册</Button>
+            </NavLink>
+        </div>
     );
 }
 
